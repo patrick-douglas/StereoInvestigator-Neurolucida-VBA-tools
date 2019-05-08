@@ -282,30 +282,6 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
 
  
 'VERTEX_DENDRITE Macro
-' DEL ALL ROWS THAT CONTAINS "Total" AND "Ajusted"
-'  Dim rng As Range, cell As Range, del As Range
-'  Set rng = Intersect(Range("A:A"), ActiveSheet.UsedRange)
-'  For Each cell In rng
-'    If (cell.Value) = "Total" _
-'    Then
-'      If del Is Nothing Then
-'        Set del = cell
-'      Else: Set del = Union(del, cell)
-'      End If
-'    End If
-'  Next cell
-'    For Each cell In rng
-'  If (cell.Value) = "Adjusted" _
-'    Then
-'      If del Is Nothing Then
-'        Set del = cell
-'      Else: Set del = Union(del, cell)
-'      End If
-'    End If
-'    Next cell
-'  On Error Resume Next
-'    del.EntireRow.Delete
-
     Windows(sFileName).Activate
     Sheets("Vertex-Dendrite").Select
     Last = Cells(Rows.Count, "A").End(xlUp).Row
