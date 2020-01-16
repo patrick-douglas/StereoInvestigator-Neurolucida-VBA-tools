@@ -1,4 +1,4 @@
-Sub Create_data_table_n_of_cells_v0_1()
+Sub optical_fractionator_data_summary_table()
 Application.ScreenUpdating = False
 '-----------------------------------
 Dim xFd As FileDialog
