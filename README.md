@@ -26,3 +26,27 @@ Every time  you run the macro remember that the results will be placed below the
 As default in **Excel** you just need press `Alt+F8` to open the **Macro Run Window**, select the macro in list and click in **Run**
 
 ![macro-window](https://github.com/patrick-douglas/SIandNL_Macros/blob/master/Wiki/macro-window-example.PNG)
+
+After click **Run** a new window will opened and you need select which raw data you will select (You can select multiple files). You need choose the correct workbook for the correct macro you are running.
+
+![example-selecting-files](https://github.com/patrick-douglas/SIandNL_Macros/blob/master/Wiki/Secting-files-Example.PNG)
+
+After click in select you will see the **Excel window blinking** don't worry this is OK, the code are Running. Depending on your dataset the porecess may take a verry long time, be patient. 
+When finished the results will be displayed as bellow:
+
+![example-result](https://github.com/patrick-douglas/SIandNL_Macros/blob/master/Wiki/Results-example.PNG)
+>IMPORTANT: Don't use you computer while the macro is running this may cause errors in the process.
+#### 3. Which types of results can I get? 
+Now the macro can create summary tables from three types:
+ 1. Summary Parameters:
+This is the first **Sheet** in excel named as `Parameters-OpticalFractionator`, the column heads show which type of information the code will extract, to choose this one You just will need run the macro `optical_fractiontor_parameter` in the **Macro Run Window**
+>IMPORTANT: This Macro only will run with workbooks extracted from **Optical Fractionator Probe** generated from software **StereoInvestigator**.
+
+2. Data Summary:
+This is the second **Sheet** in workbook named as `DataSummary-OpticalFractionator`, the column heads show which type of information the code will extract, to run this one You just will need choose the macro `optical_fractionator_data_summary` in the **Macro Run Window**.
+>IMPORTANT: This Macro only will run with workbooks extracted from **Optical Fractionator Probe** generated from software **StereoInvestigator**.
+
+3. Cavalieri Estimator data Summary:
+This is the third **Sheet** in workbook named as `DataSummary-CavalieriEstimator`, the column heads show which type of information the code will extract, to run this one You just will need choose the macro `optical_fractionator_data_summary` in the **Macro Run Window**
+>IMPORTANT: This Macro only will run with workbooks extracted from **Cavalieri Estimator** generated from software **StereoInvestigator**.
+
