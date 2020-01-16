@@ -1,4 +1,4 @@
-Sub Create_Parameter_table_v0_1()
+Sub Create_Parameter_table_for_optical_fractionator_v0_1()
 Application.ScreenUpdating = False
 '-----------------------------------
 Dim xFd As FileDialog
@@ -166,6 +166,9 @@ Windows("Article-Table-Creator.xlsm").Activate
     Windows("Article-Table-Creator.xlsm").Activate
     ActiveSheet.Cells.Columns("A:K").AutoFit
     Range("K:K").NumberFormat = "0"
+    Range("B:B").NumberFormat = "0"
+    Range("C:C").NumberFormat = "0"
+    Range("D:D").NumberFormat = "0"
     Workbooks(sFileName).Close SaveChanges:=False
 Application.ScreenUpdating = False
 
@@ -173,4 +176,3 @@ End With
 End If
 Next lngCount
 End With
-End Sub
