@@ -1,4 +1,4 @@
-Sub optical_fractionator_data_summary_table()
+Sub optical_fractionator_data_summary()
 Application.ScreenUpdating = False
 '-----------------------------------
 Dim xFd As FileDialog
@@ -26,7 +26,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(1, 26).Range("A1").Select
     ActiveCell.FormulaR1C1 = sFileName
     Selection.Copy
-    Windows("Article-Table-Creator.xlsm").Activate
+    Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(1, 0).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -38,7 +38,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(1, 11).Range("A1").Select
     Selection.Copy
-    Windows("Article-Table-Creator.xlsm").Activate
+    Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -50,7 +50,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(1, 7).Range("A1").Select
     Selection.Copy
-    Windows("Article-Table-Creator.xlsm").Activate
+    Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -63,7 +63,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(1, 7).Range("A1").Select
     Selection.Copy
-    Windows("Article-Table-Creator.xlsm").Activate
+    Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -71,9 +71,9 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("D:D").NumberFormat = "0.0"
 
                                   
-'Article-Table-Creator.xlsm
+'Stereology-Summary-Table.xlsm
     ActiveCell.Offset(0, -3).Range("A1").Select
-    Windows("Article-Table-Creator.xlsm").Activate
+    Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveSheet.Cells.Columns("A:D").AutoFit
     Range("B:B").NumberFormat = "#,##0.00"
     Workbooks(sFileName).Close SaveChanges:=False
