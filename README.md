@@ -51,4 +51,4 @@ This is the third **Sheet** in workbook named as `DataSummary-CavalieriEstimator
 >IMPORTANT: This Macro only will run with workbooks extracted from **Cavalieri Estimator** generated from software **StereoInvestigator**.
 
 #### 4. Video Tutorial:
-[![Watch the video](https://github.com/patrick-douglas/SIandNL_Macros/blob/master/Wiki/Video-Thumb2.png)](https://youtu.be/vt5fpE0bzSY)
+[![Watch the video](https://github.com/patrick-douglas/SIandNL_Macros/blob/master/Wiki/Video-Thumb2.png)](https://youtu.be/AUMm7R53Eds)
