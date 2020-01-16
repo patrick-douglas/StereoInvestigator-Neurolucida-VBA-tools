@@ -1,4 +1,4 @@
-Sub Create_Parameter_table_for_optical_fractionator()
+Sub optical_fractionator_parameter_table()
 Application.ScreenUpdating = False
 '-----------------------------------
 Dim xFd As FileDialog
