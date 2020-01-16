@@ -1,4 +1,4 @@
-Sub Create_summary_table_v0_9_2()
+Sub neurolucida_summary()
 Application.ScreenUpdating = False
 '-----------------------------------
 Dim xFd As FileDialog
@@ -26,32 +26,32 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(1, 26).Range("A1").Select
     ActiveCell.FormulaR1C1 = sFileName
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(1, 0).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
-'Length SUM (µm)
+'Length SUM (Âµm)
     Windows(sFileName).Activate
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 14).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=SUM(C[-12])"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     
-'Length Average (µm)
+'Length Average (Âµm)
     Windows(sFileName).Activate
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 15).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=AVERAGE(C3)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -66,7 +66,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(0, 16).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=AVERAGE(C4)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -74,14 +74,14 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     
-'Surface Area (Average µm²)
+'Surface Area (Average ÂµmÂ²)
     Windows(sFileName).Activate
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 17).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=AVERAGE(C5)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -89,14 +89,14 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
         
-'TREE Volume(Average µm³)
+'TREE Volume(Average ÂµmÂ³)
     Windows(sFileName).Activate
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 18).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=AVERAGE(C6)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -105,14 +105,14 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
         :=False, Transpose:=False
      
 
-'Base Diameter (Average µm)
+'Base Diameter (Average Âµm)
     Windows(sFileName).Activate
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 20).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=AVERAGE(C12)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -127,7 +127,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(0, 12).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=SUM(C2)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -150,7 +150,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Application.CutCopyMode = False
     ActiveCell.FormulaR1C1 = "=R[-2]C[-1]/R[-1]C"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -163,19 +163,19 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(0, 22).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=R[3]C[-21]"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
 
-'Surface(µm²)
+'Surface(ÂµmÂ²)
     Windows(sFileName).Activate
     Sheets("Neuron Summary").Select
     Range("A1").Select
     ActiveCell.Offset(3, 17).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -187,7 +187,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(3, 21).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
@@ -200,19 +200,19 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(0, 5).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=AVERAGE(C3)"
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
 
-'Convex Hull Volume (µm³)
+'Convex Hull Volume (ÂµmÂ³)
     Windows(sFileName).Activate
     Sheets("Convex Hull 3D").Select
     Range("A1").Select
     ActiveCell.Offset(1, 0).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -220,13 +220,13 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
 
-'Convex Hull Surface (µm²)
+'Convex Hull Surface (ÂµmÂ²)
     Windows(sFileName).Activate
     Sheets("Convex Hull 3D").Select
     Range("A1").Select
     ActiveCell.Offset(1, 1).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -235,13 +235,13 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
         :=False, Transpose:=False
 
 
-'Convex Hull Area (µm²)
+'Convex Hull Area (ÂµmÂ²)
     Windows(sFileName).Activate
     Sheets("Convex Hull 2D").Select
     Range("A1").Select
     ActiveCell.Offset(1, 0).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -249,13 +249,13 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
 
-'Convex Hull Perimeter (µm)
+'Convex Hull Perimeter (Âµm)
     Windows(sFileName).Activate
     Sheets("Convex Hull 2D").Select
     Range("A1").Select
     ActiveCell.Offset(1, 1).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -269,7 +269,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(12, 2).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -309,13 +309,13 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     ActiveCell.Offset(0, 1).Range("A1").Select
     ActiveCell.FormulaR1C1 = "=SUM(C[-8])"
    
-'COPY RESULTS OF SUM OF VA, VB, BC TO PLANILHA_RESUMO_NEUROLUCIDA.xlsm
+'COPY RESULTS OF SUM OF VA, VB, BC TO Neurolucida-Summary-Table.xlsm
     Windows(sFileName).Activate
     Sheets("Vertex-Dendrite").Select
     Range("A1").Select
     ActiveCell.Offset(0, 10).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
     ActiveCell.Offset(0, 1).Range("A1").Select
@@ -326,7 +326,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(0, 11).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -338,7 +338,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Range("A1").Select
     ActiveCell.Offset(0, 12).Range("A1").Select
     Selection.Copy
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
     'Selection.End(xlDown).Select
     'Selection.End(xlUp).Select
@@ -346,7 +346,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     ActiveCell.Offset(0, -20).Range("A1").Select
-    Windows("PLANILHA_RESUMO_NEUROLUCIDA.xlsm").Activate
+    Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveSheet.Cells.Columns("B:B").AutoFit
 Workbooks(sFileName).Close SaveChanges:=False
 Application.ScreenUpdating = False
