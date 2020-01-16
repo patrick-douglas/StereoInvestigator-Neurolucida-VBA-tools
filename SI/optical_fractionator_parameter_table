@@ -32,8 +32,6 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
 
-
-
 'Sampling Grid (X) (µm)
     Windows(sFileName).Activate
     Sheets("Parameters").Select
@@ -120,7 +118,6 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     Range("H:H").NumberFormat = "0.0000"
-              
                       
 'SSF
     Windows(sFileName).Activate
@@ -136,7 +133,6 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
         :=False, Transpose:=False
     Range("I:I").NumberFormat = "0.0000"
                      
-              
 'TSF
     Windows(sFileName).Activate
     Sheets("Parameters").Select
