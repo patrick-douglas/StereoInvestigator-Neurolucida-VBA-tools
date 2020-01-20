@@ -2,7 +2,7 @@
 # Stereology and Neurolucida VBA
 #### Stereology and Three-dimensional reconstruction Excel tools
 Hello everyone, today I will present a VBA code to help stereologists process their data from Stereoinvestigator and Neurolucida software.
-### Which kind of language this software awas made?
+### Which kind of language this software was made?
 It was made to run directly in excel through VBA
 #### How to use it?
 To run the macro you just need download and open the **xlsm file** into Excel (Tested on Excel 2019)
