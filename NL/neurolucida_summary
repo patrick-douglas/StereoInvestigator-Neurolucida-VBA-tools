@@ -336,7 +336,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
         :=False, Transpose:=False
     ActiveCell.Offset(0, -21).Range("A1").Select
     Windows("Neurolucida-Summary-Table.xlsm").Activate
-    ActiveSheet.Cells.Columns("B:B").AutoFit
+    ActiveSheet.Cells.Columns("A:A").AutoFit
 Workbooks(sFileName).Close SaveChanges:=False
 Application.ScreenUpdating = False
 
