@@ -16,8 +16,6 @@ xFileName = .SelectedItems(lngCount)
 If xFileName <> "" Then
 With Workbooks.Open(Filename:=xFileName)
 sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
-'your code
-
 '-----------------------------------
 'NAME OF EXCEL WORKBOOK
     Windows(sFileName).Activate
