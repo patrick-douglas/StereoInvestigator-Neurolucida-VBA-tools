@@ -34,7 +34,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 14).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=SUM(C[-12])"
+    ActiveCell.FormulaR1C1 = "=SUM(C[-11])"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -47,7 +47,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 15).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=AVERAGE(C3)"
+    ActiveCell.FormulaR1C1 = "=AVERAGE(C4)"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -60,7 +60,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 16).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=AVERAGE(C4)"
+    ActiveCell.FormulaR1C1 = "=AVERAGE(C5)"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -73,7 +73,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 17).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=AVERAGE(C5)"
+    ActiveCell.FormulaR1C1 = "=AVERAGE(C6)"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -86,7 +86,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 18).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=SUM(C6)"
+    ActiveCell.FormulaR1C1 = "=SUM(C7)"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -99,7 +99,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 19).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=AVERAGE(C6)"
+    ActiveCell.FormulaR1C1 = "=AVERAGE(C7)"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -113,7 +113,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Segment-Dendrites").Select
     Range("A1").Select
     ActiveCell.Offset(0, 20).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=AVERAGE(C12)"
+    ActiveCell.FormulaR1C1 = "=AVERAGE(C13)"
     Selection.Copy
     Windows("Neurolucida-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -342,4 +342,55 @@ End With
 End If
 Next lngCount
 End With
+End Sub
+
+
+'=========================================================================
+'Outlier scores
+'=========================================================================
+Sub Test_Out()
+Dim i As Long, j As Long, k As Long, n_raw As Long, n_dimension As Long
+Dim tmp_x As Double, tmp_y As Double
+Dim vArr As Variant
+Dim x() As Double, y() As Double, x_class As Variant, factor_labels() As String
+Dim x_shift() As Double, x_scale() As Double
+Dim y_MD() As Double, y_LOF() As Double, y_kNN() As Double, y_Influence() As Double
+Dim mywkbk As Workbook
+    Set mywkbk = ActiveWorkbook
+    Application.Calculation = xlCalculationManual
+    Application.ScreenUpdating = False
+    
+    Call Read_Data(mywkbk.Sheets("Outlier"), n_raw, n_dimension, x, x_class, factor_labels) 'Read in raw data
+    Call modMath.Normalize_x(x, x_shift, x_scale, "AVGSD") 'Normalize raw data
+'Call Clean_Outlier
+    Dim PCA1 As New cPCA
+    Call PCA1.PCA(x)     'Perform PCA on raw data
+    With mywkbk.Sheets("Outliers")
+        .Range("A3:G10000").Clear
+        .Range("M3:Q10000").Clear
+        .Range("A3").Resize(n_raw, 1).Value = modMath.wkshtTranspose(x_class)
+        .Range("B3").Resize(n_raw, 2).Value = PCA1.x_PCA(2)     'Output data projected onto the first 2 PCs
+        .Range("M3").Resize(n_dimension, 2).Value = modMath.wkshtTranspose(factor_labels)
+        Call PCA1.BiPlot_Print(.Range("N3"), 1, 2)              'Print Biplot for the first 2 PCs
+    End With
+    Call PCA1.Reset
+    Set PCA1 = Nothing
+    
+    y_MD = mOutliers.MahalanobisDist(x)
+    y_LOF = mOutliers.LOF(x, 5)
+    y_kNN = mOutliers.KthNeighborDist(x, 5, True)
+    y_Influence = mOutliers.Influence_Iterate(x)
+    
+    With mywkbk.Sheets("Outliers")
+        .Range("D3").Resize(n_raw, 1).Value = modMath.wkshtTranspose(y_MD)
+        .Range("E3").Resize(n_raw, 1).Value = modMath.wkshtTranspose(y_LOF)
+        .Range("F3").Resize(n_raw, 1).Value = modMath.wkshtTranspose(y_kNN)
+        .Range("G3").Resize(n_raw, 1).Value = modMath.wkshtTranspose(y_Influence)
+        
+    End With
+    
+    Erase x, x_class, x_shift, x_scale
+    Set mywkbk = Nothing
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
 End Sub
