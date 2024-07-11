@@ -1,0 +1,186 @@
+Sub optical_fractionator_parameter()
+Application.ScreenUpdating = False
+'-----------------------------------
+Dim xFd As FileDialog
+Dim xFdItem As Variant
+Dim xFileName As String
+Dim xFB As String
+With Application.FileDialog(msoFileDialogOpen)
+.AllowMultiSelect = True
+.Filters.Clear
+.Filters.Add "excel", "*.xls*"
+.Show
+If .SelectedItems.Count < 1 Then Exit Sub
+For lngCount = 1 To .SelectedItems.Count
+xFileName = .SelectedItems(lngCount)
+If xFileName <> "" Then
+With Workbooks.Open(Filename:=xFileName)
+sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
+'your code
+
+'-----------------------------------
+'NAME OF EXCEL WORKBOOK
+    Windows(sFileName).Activate
+    Sheets("Summary").Select
+    Range("A1").Select
+    ActiveCell.Offset(1, 26).Range("A1").Select
+    ActiveCell.FormulaR1C1 = sFileName
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(1, 0).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+
+'Sampling Grid (X) (µm)
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(15, 1).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+
+'Sampling Grid (y) (µm)
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(16, 1).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+
+'A(x,step) (µm)
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(12, 1).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+
+'A(y,step) (µm)
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(13, 1).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+'Section Evaluation Interval
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(23, 1).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+        
+'Number of Sampling Sites
+    Windows(sFileName).Activate
+    Sheets("Summary").Select
+    Range("A1").Select
+    ActiveCell.Offset(1, 5).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+        
+'Number of Sections
+    Windows(sFileName).Activate
+    Sheets("Summary").Select
+    Range("A1").Select
+    ActiveCell.Offset(1, 3).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("G:G").NumberFormat = "0"
+              
+'ASF
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(0, 5).Range("A1").Select
+    ActiveCell.FormulaR1C1 = "=(R[13]C[-4]*R[14]C[-4])/(R[15]C[-4]*R[16]C[-4])"
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("H:H").NumberFormat = "0.0000"
+                       
+'SSF
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(0, 6).Range("A1").Select
+        ActiveCell.FormulaR1C1 = "=1/R[23]C[-5]"
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("I:I").NumberFormat = "0.0000"
+               
+'TSF
+    Windows(sFileName).Activate
+    Sheets("Parameters").Select
+    Range("A1").Select
+    ActiveCell.Offset(0, 7).Range("A1").Select
+    ActiveCell.FormulaR1C1 = "=R[9]C[-6]/R[22]C[-6]"
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("J:J").NumberFormat = "0.0000"
+                                   
+'SUMQ
+    Windows(sFileName).Activate
+    Sheets("Summary").Select
+    Range("A1").Select
+    ActiveCell.Offset(1, 2).Range("A1").Select
+    Selection.Copy
+Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    ActiveCell.Offset(0, -10).Range("A1").Select
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveSheet.Cells.Columns("A:K").AutoFit
+    Range("K:K").NumberFormat = "0"
+    Range("B:B").NumberFormat = "0"
+    Range("C:C").NumberFormat = "0"
+    Range("D:D").NumberFormat = "0"
+    Workbooks(sFileName).Close SaveChanges:=False
+Application.ScreenUpdating = False
+
+End With
+End If
+Next lngCount
+End With
+End Sub
