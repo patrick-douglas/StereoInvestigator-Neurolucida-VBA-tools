@@ -169,14 +169,23 @@ Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
-    ActiveCell.Offset(0, -10).Range("A1").Select
+    ActiveCell.Offset(0, -11).Range("A1").Select
     Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveSheet.Cells.Columns("A:K").AutoFit
     Range("K:K").NumberFormat = "0"
     Range("B:B").NumberFormat = "0"
     Range("C:C").NumberFormat = "0"
     Range("D:D").NumberFormat = "0"
+    Range("E:E").NumberFormat = "0"
     Workbooks(sFileName).Close SaveChanges:=False
+
+'General
+Columns("A:B").AutoFit
+Columns("B:H").NumberFormat = "0"
+Columns("A:Z").Font.Bold = False
+Columns("A:A").HorizontalAlignment = xlLeft
+Columns("I:K").NumberFormat = "0.00000"
+Columns("L:L").NumberFormat = "0"
 Application.ScreenUpdating = False
 
 End With
