@@ -212,7 +212,7 @@ Columns("A:A").HorizontalAlignment = xlLeft
 Columns("J:L").NumberFormat = "0.00000"
 Columns("I:I").NumberFormat = "0"
 Columns("M:M").NumberFormat = "0"
-Columns("N:O").NumberFormat = "0.00"
+Columns("N:O").NumberFormat = "#,##0.00"
 Application.DisplayAlerts = True
 Application.ScreenUpdating = False
 
