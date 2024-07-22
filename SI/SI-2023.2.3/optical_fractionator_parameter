@@ -1,5 +1,6 @@
 Sub optical_fractionator_parameter()
 Application.ScreenUpdating = False
+Application.DisplayAlerts = False
 '-----------------------------------
 Dim xFd As FileDialog
 Dim xFdItem As Variant
@@ -16,8 +17,6 @@ xFileName = .SelectedItems(lngCount)
 If xFileName <> "" Then
 With Workbooks.Open(Filename:=xFileName)
 sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
-'your code
-
 '-----------------------------------
 'NAME OF EXCEL WORKBOOK
     Windows(sFileName).Activate
@@ -121,7 +120,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Parameters").Select
     Range("A1").Select
     ActiveCell.Offset(0, 5).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=(R[13]C[-4]*R[14]C[-4])/(R[15]C[-4]*R[16]C[-4])"
+    ActiveCell.FormulaR1C1 = "=(R[12]C[-4]*R[13]C[-4])/(R[15]C[-4]*R[16]C[-4])"
     Selection.Copy
     Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -129,6 +128,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     Range("H:H").NumberFormat = "0.0000"
+
                        
 'SSF
     Windows(sFileName).Activate
@@ -149,7 +149,7 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
     Sheets("Parameters").Select
     Range("A1").Select
     ActiveCell.Offset(0, 7).Range("A1").Select
-    ActiveCell.FormulaR1C1 = "=R[9]C[-6]/R[22]C[-6]"
+    ActiveCell.FormulaR1C1 = "=R[8]C[-6]/R[22]C[-6]"  ' Ajuste para =B9/B23
     Selection.Copy
     Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 0).Range("A1").Select
@@ -178,6 +178,7 @@ Windows("Stereology-Summary-Table.xlsm").Activate
     Range("D:D").NumberFormat = "0"
     Range("E:E").NumberFormat = "0"
     Workbooks(sFileName).Close SaveChanges:=False
+    
 
 'General
 Columns("A:B").AutoFit
@@ -186,6 +187,7 @@ Columns("A:Z").Font.Bold = False
 Columns("A:A").HorizontalAlignment = xlLeft
 Columns("I:K").NumberFormat = "0.00000"
 Columns("L:L").NumberFormat = "0"
+Application.DisplayAlerts = True
 Application.ScreenUpdating = False
 
 End With
