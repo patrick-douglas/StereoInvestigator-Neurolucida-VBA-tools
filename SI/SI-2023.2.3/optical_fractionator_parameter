@@ -115,6 +115,19 @@ sFileName = Split(xFileName, "\")(UBound(Split(xFileName, "\")))
         :=False, Transpose:=False
     Range("G:G").NumberFormat = "0"
               
+'Number of Missing Sections
+    Windows(sFileName).Activate
+    Sheets("Summary").Select
+    Range("A1").Select
+    ActiveCell.Offset(1, 16).Range("A1").Select
+    Selection.Copy
+    Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("G:G").NumberFormat = "0"
+    
 'ASF
     Windows(sFileName).Activate
     Sheets("Parameters").Select
@@ -169,7 +182,20 @@ Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
-    ActiveCell.Offset(0, -11).Range("A1").Select
+'    ActiveCell.Offset(0, -12).Range("A1").Select
+    Windows("Stereology-Summary-Table.xlsm").Activate
+'Number of objects
+Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    ActiveCell.FormulaR1C1 = "=R[0]C[-1]/(R[0]C[-4]*R[0]C[-3]*R[0]C[-2])"
+           
+'Number of objects (Account for missing sections)
+Windows("Stereology-Summary-Table.xlsm").Activate
+    ActiveCell.Offset(0, 0).Range("A1").Select
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    ActiveCell.FormulaR1C1 = "=R[0]C[-1]*((R[0]C[-7]+R[0]C[-6])/R[0]C[-7])"
+    ActiveCell.Offset(0, -12).Range("A1").Select
     Windows("Stereology-Summary-Table.xlsm").Activate
     ActiveSheet.Cells.Columns("A:K").AutoFit
     Range("K:K").NumberFormat = "0"
@@ -178,15 +204,15 @@ Windows("Stereology-Summary-Table.xlsm").Activate
     Range("D:D").NumberFormat = "0"
     Range("E:E").NumberFormat = "0"
     Workbooks(sFileName).Close SaveChanges:=False
-    
-
 'General
 Columns("A:B").AutoFit
 Columns("B:H").NumberFormat = "0"
 Columns("A:Z").Font.Bold = False
 Columns("A:A").HorizontalAlignment = xlLeft
-Columns("I:K").NumberFormat = "0.00000"
-Columns("L:L").NumberFormat = "0"
+Columns("J:L").NumberFormat = "0.00000"
+Columns("I:I").NumberFormat = "0"
+Columns("M:M").NumberFormat = "0"
+Columns("N:O").NumberFormat = "0.00"
 Application.DisplayAlerts = True
 Application.ScreenUpdating = False
 
