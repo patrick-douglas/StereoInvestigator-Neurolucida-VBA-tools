@@ -1,6 +1,6 @@
 Option Explicit
 
-Sub cavalieri_estimator_append_parameters_table()
+Sub cavalieri_estimator_parameters_table()
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -17,9 +17,13 @@ Sub cavalieri_estimator_append_parameters_table()
     Dim missingValue As Variant
     Dim dataFileValue As Variant
     Dim markerValue As Variant
+    Dim shapeFactorValue As Variant
 
     'Use the currently active sheet as destination
     Set dstWs = ActiveSheet
+
+    'Make sure headers exist, including Shape Factor
+    EnsureCavalieriHeaders dstWs
 
     'Find next empty row below the existing table
     nextRow = NextEmptyRow(dstWs, "A")
@@ -36,7 +40,18 @@ Sub cavalieri_estimator_append_parameters_table()
 
         For Each filePath In .SelectedItems
 
+            Set srcWb = Nothing
+            Set wsSummary = Nothing
+            Set wsParams = Nothing
+
+            On Error Resume Next
             Set srcWb = Workbooks.Open(CStr(filePath), ReadOnly:=True)
+            On Error GoTo 0
+
+            If srcWb Is Nothing Then
+                MsgBox "Could not open file: " & CStr(filePath), vbExclamation
+                GoTo NextFile
+            End If
 
             On Error Resume Next
             Set wsSummary = srcWb.Worksheets("Summary")
@@ -44,10 +59,8 @@ Sub cavalieri_estimator_append_parameters_table()
             On Error GoTo 0
 
             If wsSummary Is Nothing Then
-                MsgBox "The file does not have a 'Summary' sheet: " & srcWb.Name, vbExclamation
+                MsgBox "The file does not have a 'Summary' sheet: " & CStr(filePath), vbExclamation
                 srcWb.Close SaveChanges:=False
-                Set wsSummary = Nothing
-                Set wsParams = Nothing
                 GoTo NextFile
             End If
 
@@ -61,36 +74,45 @@ Sub cavalieri_estimator_append_parameters_table()
                     markerValue = GetByHeader(wsSummary, "Marker", r, "")
 
                     missingValue = GetByHeader(wsSummary, "Missing Sections", r, 0)
-
                     If IsEmpty(missingValue) Or Trim(CStr(missingValue)) = "" Then
                         missingValue = 0
                     End If
 
-                    'Optional duplicate protection:
-                    'If same Data File + Structure already exists, skip it
+                    'Try to get Shape Factor from Summary first.
+                    shapeFactorValue = GetByHeader(wsSummary, "Shape Factor", r, "")
+
+                    'If not found in Summary, try Parameters sheet.
+                    If (IsEmpty(shapeFactorValue) Or Trim(CStr(shapeFactorValue)) = "") Then
+                        If Not wsParams Is Nothing Then
+                            shapeFactorValue = GetParameterValue(wsParams, "Shape Factor", "")
+                        End If
+                    End If
+
+                    'Avoid duplicate rows based on Data File + Structure
                     If Not RowAlreadyExists(dstWs, CStr(dataFileValue), CStr(markerValue)) Then
 
                         With dstWs
                             .Cells(nextRow, 1).Value = dataFileValue
                             .Cells(nextRow, 2).Value = markerValue
 
-                            .Cells(nextRow, 3).Value = GetByHeader(wsSummary, "Section Cut Thickness", r, "")
-                            .Cells(nextRow, 4).Value = GetByHeader(wsSummary, "Section Evaluation Interval", r, "")
-                            .Cells(nextRow, 5).Value = GetByHeader(wsSummary, "Grid Size", r, "")
+                            .Cells(nextRow, 3).Value = CleanNumber(GetByHeader(wsSummary, "Section Cut Thickness", r, ""))
+                            .Cells(nextRow, 4).Value = CleanNumber(GetByHeader(wsSummary, "Section Evaluation Interval", r, ""))
+                            .Cells(nextRow, 5).Value = CleanNumber(GetByHeader(wsSummary, "Grid Size", r, ""))
 
                             If Not wsParams Is Nothing Then
-                                .Cells(nextRow, 6).Value = GetParameterValue(wsParams, "Associated Area", "")
-                                .Cells(nextRow, 7).Value = GetParameterValue(wsParams, "Associated Volume", "")
+                                .Cells(nextRow, 6).Value = CleanNumber(GetParameterValue(wsParams, "Associated Area", ""))
+                                .Cells(nextRow, 7).Value = CleanNumber(GetParameterValue(wsParams, "Associated Volume", ""))
                             Else
                                 .Cells(nextRow, 6).Value = ""
                                 .Cells(nextRow, 7).Value = ""
                             End If
 
-                            .Cells(nextRow, 8).Value = GetByHeader(wsSummary, "Sections", r, "")
-                            .Cells(nextRow, 9).Value = GetByHeader(wsSummary, "Count", r, "")
-                            .Cells(nextRow, 10).Value = missingValue
-                            .Cells(nextRow, 11).Value = GetByHeader(wsSummary, "Estimated Volume", r, "")
-                            .Cells(nextRow, 12).Value = GetByHeader(wsSummary, "Coefficient of Error (Gundersen), m=1", r, "")
+                            .Cells(nextRow, 8).Value = CleanNumber(GetByHeader(wsSummary, "Sections", r, ""))
+                            .Cells(nextRow, 9).Value = CleanNumber(GetByHeader(wsSummary, "Count", r, ""))
+                            .Cells(nextRow, 10).Value = CleanNumber(missingValue)
+                            .Cells(nextRow, 11).Value = CleanNumber(GetByHeader(wsSummary, "Estimated Volume", r, ""))
+                            .Cells(nextRow, 12).Value = CleanNumber(GetByHeader(wsSummary, "Coefficient of Error (Gundersen), m=1", r, ""))
+                            .Cells(nextRow, 13).Value = CleanNumber(shapeFactorValue)
                         End With
 
                         nextRow = nextRow + 1
@@ -112,22 +134,81 @@ NextFile:
 
     End With
 
-    With dstWs
-        .Columns("A:B").NumberFormat = "@"
-        .Columns("C:E").NumberFormat = "0.###"
-        .Columns("F:F").NumberFormat = "#,##0.###"
-        .Columns("G:G").NumberFormat = "0.000000"
-        .Columns("H:J").NumberFormat = "0"
-        .Columns("K:K").NumberFormat = "0.000"
-        .Columns("L:L").NumberFormat = "0.000"
-        .Columns("A:L").AutoFit
-    End With
+    ApplyCavalieriNumberFormatting dstWs
 
     MsgBox "New Cavalieri samples were appended below the existing table.", vbInformation
 
 SafeExit:
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
+
+End Sub
+
+
+Private Sub EnsureCavalieriHeaders(ws As Worksheet)
+
+    Dim headers As Variant
+    Dim i As Long
+
+    headers = Array( _
+        "Data File", _
+        "Structure", _
+        "Section cut thickness (µm)", _
+        "Section evaluation interval", _
+        "Grid size (µm)", _
+        "Area per point (µm²)", _
+        "Associated volume (mm³)", _
+        "No. sections analyzed", _
+        "Total points counted", _
+        "Missing sections", _
+        "Estimated volume (mm³)", _
+        "Coefficient of Error (Gundersen), m=1", _
+        "Shape Factor" _
+    )
+
+    For i = LBound(headers) To UBound(headers)
+        If Trim(CStr(ws.Cells(1, i + 1).Value)) = "" Then
+            ws.Cells(1, i + 1).Value = headers(i)
+        End If
+    Next i
+
+    With ws.Range("A1:M1")
+        .Font.Bold = True
+        .WrapText = True
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+    End With
+
+End Sub
+
+
+Private Sub ApplyCavalieriNumberFormatting(ws As Worksheet)
+
+    With ws
+        .Columns("A:B").NumberFormat = "@"
+
+        'Integer-like columns
+        .Columns("C:E").NumberFormat = "0"
+        .Columns("H:J").NumberFormat = "0"
+
+        'Area per point
+        .Columns("F:F").NumberFormat = "#,##0"
+
+        'Associated volume
+        .Columns("G:G").NumberFormat = "0.000000"
+
+        'Estimated volume
+        .Columns("K:K").NumberFormat = "0.000"
+
+        'CE Gundersen m=1
+        .Columns("L:L").NumberFormat = "0.000"
+
+        'Shape factor
+        .Columns("M:M").NumberFormat = "0.000"
+
+        .Columns("A:M").AutoFit
+        .Rows(1).RowHeight = 42
+    End With
 
 End Sub
 
@@ -241,5 +322,40 @@ Private Function NormalizeText(valueIn As Variant) As String
     txt = LCase(txt)
 
     NormalizeText = txt
+
+End Function
+
+
+Private Function CleanNumber(valueIn As Variant) As Variant
+
+    Dim txt As String
+
+    If IsEmpty(valueIn) Or Trim(CStr(valueIn)) = "" Then
+        CleanNumber = ""
+        Exit Function
+    End If
+
+    If IsNumeric(valueIn) Then
+        CleanNumber = CDbl(valueIn)
+        Exit Function
+    End If
+
+    txt = Trim(CStr(valueIn))
+    txt = Replace(txt, Chr(160), "")
+    txt = Replace(txt, " ", "")
+
+    'Remove thousands separators commonly found in exported tables
+    txt = Replace(txt, ",", "")
+
+    'Remove a trailing dot, e.g. "20." becomes "20"
+    If Right(txt, 1) = "." Then
+        txt = Left(txt, Len(txt) - 1)
+    End If
+
+    If IsNumeric(txt) Then
+        CleanNumber = CDbl(txt)
+    Else
+        CleanNumber = valueIn
+    End If
 
 End Function
