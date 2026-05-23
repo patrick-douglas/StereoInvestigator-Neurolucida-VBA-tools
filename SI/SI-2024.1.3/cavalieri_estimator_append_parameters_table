@@ -1,3 +1,5 @@
+Option Explicit
+
 Sub cavalieri_estimator_append_parameters_table()
 
     Application.ScreenUpdating = False
@@ -24,13 +26,13 @@ Sub cavalieri_estimator_append_parameters_table()
     Dim dataFileValue As Variant
     Dim markerValue As Variant
     Dim shapeFactorValue As Variant
+    Dim adjustedVolumeValue As Variant
 
     ' Destination = active sheet
     Set dstWs = ActiveSheet
 
     ' IMPORTANT:
-    ' Before running, select the existing "Excel File Name" header cell.
-    ' Example: if D1 = Excel File Name, select D1.
+    ' Select the existing "Excel File Name" header cell before running.
     Set topLeft = ActiveCell
     headerRow = topLeft.Row
     startCol = topLeft.Column
@@ -86,9 +88,29 @@ Sub cavalieri_estimator_append_parameters_table()
                     dataFileValue = GetByHeader(wsSummary, "Data File", r, srcWb.Name)
                     markerValue = GetByHeader(wsSummary, "Marker", r, "")
 
-                    missingValue = GetByHeader(wsSummary, "Missing Sections", r, 0)
+                    ' Missing sections can appear as "Missing Sections" or "Missing Section"
+                    missingValue = GetByHeader(wsSummary, "Missing Sections", r, "")
+                    
+                    If IsEmpty(missingValue) Or Trim(CStr(missingValue)) = "" Then
+                        missingValue = GetByHeader(wsSummary, "Missing Section", r, 0)
+                    End If
+
                     If IsEmpty(missingValue) Or Trim(CStr(missingValue)) = "" Then
                         missingValue = 0
+                    End If
+
+                    missingValue = CleanNumber(missingValue)
+
+                    ' Adjusted volume:
+                    ' If there are no missing sections, report "none"
+                    If IsNumeric(missingValue) And CDbl(missingValue) = 0 Then
+                        adjustedVolumeValue = "none"
+                    Else
+                        adjustedVolumeValue = GetAdjustedVolume(wsSummary, r)
+
+                        If IsEmpty(adjustedVolumeValue) Or Trim(CStr(adjustedVolumeValue)) = "" Then
+                            adjustedVolumeValue = "not reported"
+                        End If
                     End If
 
                     ' Shape Factor may be in Summary or Parameters
@@ -125,10 +147,13 @@ Sub cavalieri_estimator_append_parameters_table()
 
                             .Cells(nextRow, startCol + 8).Value = CleanNumber(GetByHeader(wsSummary, "Sections", r, ""))
                             .Cells(nextRow, startCol + 9).Value = CleanNumber(GetByHeader(wsSummary, "Count", r, ""))
-                            .Cells(nextRow, startCol + 10).Value = CleanNumber(missingValue)
+                            .Cells(nextRow, startCol + 10).Value = missingValue
+
                             .Cells(nextRow, startCol + 11).Value = CleanNumber(GetByHeader(wsSummary, "Estimated Volume", r, ""))
-                            .Cells(nextRow, startCol + 12).Value = CleanNumber(GetByHeader(wsSummary, "Coefficient of Error (Gundersen), m=1", r, ""))
-                            .Cells(nextRow, startCol + 13).Value = CleanNumber(shapeFactorValue)
+                            .Cells(nextRow, startCol + 12).Value = CleanNumber(adjustedVolumeValue)
+
+                            .Cells(nextRow, startCol + 13).Value = CleanNumber(GetByHeader(wsSummary, "Coefficient of Error (Gundersen), m=1", r, ""))
+                            .Cells(nextRow, startCol + 14).Value = CleanNumber(shapeFactorValue)
                         End With
 
                         nextRow = nextRow + 1
@@ -186,16 +211,106 @@ Private Sub ApplyCavalieriNumberFormatting(ws As Worksheet, startCol As Long)
         ' Estimated volume
         .Columns(startCol + 11).NumberFormat = "0.000"
 
-        ' CE Gundersen m=1
-        .Columns(startCol + 12).NumberFormat = "0.000"
+        ' Estimated volume adjusted for missing sections
+        .Columns(startCol + 12).NumberFormat = "General"
 
-        ' Shape Factor
+        ' CE Gundersen m=1
         .Columns(startCol + 13).NumberFormat = "0.000"
 
-        .Range(.Cells(1, startCol), .Cells(1, startCol + 13)).EntireColumn.AutoFit
+        ' Shape Factor
+        .Columns(startCol + 14).NumberFormat = "0.000"
+
+        .Range(.Cells(1, startCol), .Cells(1, startCol + 14)).EntireColumn.AutoFit
     End With
 
 End Sub
+
+
+Private Function GetAdjustedVolume(ws As Worksheet, dataRow As Long) As Variant
+
+    Dim colNum As Long
+    Dim val As Variant
+
+    ' Best match: header contains volume + adjusted + missing + section
+    colNum = FindHeaderColumnAll(ws, Array("volume", "adjusted", "missing", "section"))
+
+    If colNum > 0 Then
+        val = ws.Cells(dataRow, colNum).Value
+        If Not IsEmpty(val) And Trim(CStr(val)) <> "" Then
+            GetAdjustedVolume = val
+            Exit Function
+        End If
+    End If
+
+    ' Fallback: header contains mm3 + adjusted + missing + section
+    colNum = FindHeaderColumnAll(ws, Array("mm3", "adjusted", "missing", "section"))
+
+    If colNum > 0 Then
+        val = ws.Cells(dataRow, colNum).Value
+        If Not IsEmpty(val) And Trim(CStr(val)) <> "" Then
+            GetAdjustedVolume = val
+            Exit Function
+        End If
+    End If
+
+    ' Fallback: header contains mm + adjusted + missing + section
+    colNum = FindHeaderColumnAll(ws, Array("mm", "adjusted", "missing", "section"))
+
+    If colNum > 0 Then
+        val = ws.Cells(dataRow, colNum).Value
+        If Not IsEmpty(val) And Trim(CStr(val)) <> "" Then
+            GetAdjustedVolume = val
+            Exit Function
+        End If
+    End If
+
+    GetAdjustedVolume = ""
+
+End Function
+
+
+Private Function FindHeaderColumnAll(ws As Worksheet, requiredTerms As Variant) As Long
+
+    Dim lastCol As Long
+    Dim c As Long
+    Dim rr As Long
+    Dim i As Long
+    Dim headerText As String
+    Dim term As String
+    Dim allFound As Boolean
+
+    lastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
+
+    For c = 1 To lastCol
+
+        headerText = ""
+
+        ' Look across the first few rows in case the header is split across rows
+        For rr = 1 To 5
+            headerText = headerText & " " & NormalizeText(ws.Cells(rr, c).Value)
+        Next rr
+
+        allFound = True
+
+        For i = LBound(requiredTerms) To UBound(requiredTerms)
+            term = NormalizeText(requiredTerms(i))
+
+            If InStr(1, headerText, term, vbTextCompare) = 0 Then
+                allFound = False
+                Exit For
+            End If
+        Next i
+
+        If allFound Then
+            FindHeaderColumnAll = c
+            Exit Function
+        End If
+
+    Next c
+
+    FindHeaderColumnAll = 0
+
+End Function
 
 
 Private Function NextEmptyRowFrom(ws As Worksheet, startCol As Long, firstDataRow As Long) As Long
@@ -326,6 +441,13 @@ Private Function NormalizeText(valueIn As Variant) As String
     txt = Replace(txt, vbCr, " ")
     txt = Replace(txt, vbLf, " ")
     txt = Replace(txt, Chr(160), " ")
+
+    ' Normalize symbols and superscripts
+    txt = Replace(txt, "³", "3")
+    txt = Replace(txt, "²", "2")
+    txt = Replace(txt, "µ", "u")
+    txt = Replace(txt, "μ", "u")
+
     txt = Application.WorksheetFunction.Trim(txt)
     txt = LCase(txt)
 
@@ -367,5 +489,3 @@ Private Function CleanNumber(valueIn As Variant) As Variant
     End If
 
 End Function
-
-
